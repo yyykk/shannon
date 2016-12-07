@@ -11,20 +11,20 @@ using namespace std;
 
 class shannon{
 public:
-	shannon(){};
 	shannon(string file_name);
 	void show();
 	//TODO:
-	//string to_shannon_code(string str = "");
 	//string to_word(string str = "");
+	string to_shannon_code(string str = "");
 	
 
 private:
-	int make_code();
-	string decimals_to_binary(double decimals, int figures);
-	int get_probability(string file_name);
-	multimap<double, string> word;
-	multimap<string, string> already;
+	shannon(){};
+	int make_code();//编码
+	string decimals_to_binary(double decimals, int figures);//10进制小数转2进制数（小数，位数）
+	int get_probability(string file_name);//从文本中分析各个字符概率
+	multimap<double, string> word;//原始字符、概率
+	multimap<string, string> already;//编码后字符、shannon码
 	string get_text;
 };
 
@@ -94,6 +94,19 @@ string shannon::decimals_to_binary(double decimals, int figures){
 	return code;
 }
 
+string shannon::to_shannon_code(string str){
+	string code = "";
+	if (str == ""){
+		str = get_text;
+	}
+	for (auto &s : str){
+		ostringstream stream;
+		stream << s;
+		code += already.find(stream.str())->second;
+	}
+	return code;
+}
+
 void shannon::show(){
 	for (auto s : already){
 		cout << s.first << "\t" << s.second << endl;
@@ -102,6 +115,6 @@ void shannon::show(){
 
 int main(){
 	shannon a("demo.txt");
-	a.show();
+	cout << a.to_shannon_code() << endl;
 	system("pause");
 }
